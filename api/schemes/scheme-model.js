@@ -4,7 +4,7 @@ async function find() { // EXERCISE A
   const schemes = await db('schemes as sc')
     .leftJoin('steps as st', 'sc.scheme_id', 'st.scheme_id')
     .groupBy('sc.scheme_id')
-    .count('st.step_id')
+    .count('st.step_id as number_of_steps')
     .orderBy('sc.scheme_id')
     .select('sc.*')
 
@@ -28,7 +28,16 @@ async function find() { // EXERCISE A
   */
 }
 
-function findById(scheme_id) { // EXERCISE B
+async function findById(scheme_id) { // EXERCISE B
+  const scheme = await db('schemes as sc')
+    .leftJoin('steps as st', 'sc.scheme_id', 'st.scheme_id')
+    .select('sc.scheme_name', 'st.*')
+    .where('sc.scheme_id', scheme_id)
+    .orderBy('st.step_id', 'asc')
+    
+
+return scheme
+
   /*
     1B- Study the SQL query below running it in SQLite Studio against `data/schemes.db3`:
 

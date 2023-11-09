@@ -10,12 +10,13 @@ const db = require('../../data/db-config')
 */
 const checkSchemeId = async (req, res, next) => {
   const schemeId = await db('schemes')
-    .select('scheme_id', req.params.id)
+    .where('scheme_id', req.params.scheme_id)
+    .first()
   if (schemeId) {
     next()
   }
   else {
-    next({status: 404, message: `scheme with scheme_id ${schemeId} not found`})
+    next({status: 404, message: `scheme with scheme_id ${req.params.id} not found`})
   }
 }
 
@@ -28,7 +29,7 @@ const checkSchemeId = async (req, res, next) => {
   }
 */
 const validateScheme = (req, res, next) => {
-  if (!req.body.scheme_name || typeof req.body.scheme_name !== 'string') {
+  if (!req.body.scheme_name.trim() || typeof req.body.scheme_name !== 'string') {
     next({
       status:404,
       message: 'invalid scheme_name'
@@ -49,7 +50,7 @@ const validateScheme = (req, res, next) => {
   }
 */
 const validateStep = (req, res, next) => {
-  if (!req.body.instructions || typeof req.body.instructions !== 'string' || isNaN(req.body.step_number) || req.body.step_number<1) {
+  if (!req.body.instructions.trim() || typeof req.body.instructions !== 'string' || isNaN(req.body.step_number) || req.body.step_number<1) {
     next({
       status: 400,
       message: 'invalid step'
